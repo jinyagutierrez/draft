@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Shopping Cart</title>
+    <link rel="stylesheet" href="cart.css" media="screen" type="text/css" />
+</head>
+<body>
+    <div id="site">
+        <header id="masthead">
+            <h1>Your Shopping Cart</h1>
+        </header>
+        <div id="content">
+            <table class="shopping-cart">
+                <thead>
+                    <tr>
+                        <th scope="col">Item</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-items">
+                    
+                </tbody>
+            </table>
+            <p id="sub-total">
+                <strong>Sub Total</strong>: <span id="stotal"></span>
+            </p>
+            <ul id="shopping-cart-actions">
+                <li>
+                    <a href="index.html" class="btn">Continue Shopping</a>
+                </li>
+                <li>
+                    <a href="#" class="btn" id="clear-cart">Clear Cart</a>
+                </li>
+                <li>
+                    <a href="#" class="btn" id="checkout">Proceed to Checkout</a>
+                </li>
+            </ul>
+        </div>
+        <footer id="site-info">
+            <p>&copy; Your Website. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            displayCart();
+
+            $("#clear-cart").on("click", function() {
+                clearCart();
+            });
+        });
+
+        function displayCart() {
+            var cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+            var $cartItems = $("#cart-items");
+            var total = 0;
+
+            $cartItems.empty();
+
+            cart.forEach(function(item) {
+                var $row = $("<tr>");
+                $row.append($("<td>").text(item.product));
+                $row.append($("<td>").text(item.quantity));
+                $row.append($("<td>").text("$" + item.price.toFixed(2)));
+                $row.append($("<td>").text("$" + (item.price * item.quantity).toFixed(2)));
+                $row.append($("<td>").html("<a href='#' class='btn btn-danger btn-sm remove-item' data-product='" + item.product + "'>Remove</a>"));
+                $cartItems.append($row);
+
+                total += item.price * item.quantity;
+            });
+
+            $("#stotal").text("$" + total.toFixed(2));
+        }
+
+        function clearCart() {
+            sessionStorage.removeItem("cart");
+            displayCart();
+        }
+    </script>
+</body>
+</html>
